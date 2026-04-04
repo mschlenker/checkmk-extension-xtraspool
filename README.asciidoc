@@ -9,11 +9,8 @@ This repository contains an link:https://github.com/checkmk/checkmk[Checkmk^] ag
 
 In buffered mode, the whole file is read into memory and only emitted if it passes some basic checks, like being UTF-8 and starting with an agent section.
 In buffered mode also non-terminated piggyback sections will be correctly terminated.
-In unbuffered mode, the file is just printed to STDOUT. Invalid UTF-8 will make the output stop within a file.
-
-For configuration a JSON config file xtraspool.json must be present in `$MK_CONFDIR`.
-See the comments in xtraspool.py to get an idea how to write on.
-Users of the commercial editions can use the Agent Bakery to configure the plugin.
+In unbuffered mode, the file is just printed to STDOUT.
+Invalid UTF-8 will make the output stop within a file.
 
 == Compatibility
 
@@ -27,13 +24,73 @@ Currently, Checkmk versions 2.3.0 to 2.5.0 are supported.
 Download the MKP from the _Releases_ section (when it becomes available) and install as described in the link:https://docs.checkmk.com/latest/en/mkps.html[Official Checkmk User Guide].
 ////
 
-No MKP added yet.
-I will add an MKP when I am finished with error handling and creating a separate `xtraspool` service that tells about errors.
+I will build MKPs from time to time when a rather stable state is reached and all components play well with each other.
 
 === Developers
 
-*Be careful, the paths in this repo might only work with Checkmk 2.4!*
+*Be careful, the paths in this repo might only work with Checkmk 2.4 because the bakery plug-in changed location*
 
 Clone this repository, then sync the content of `_omd_root` to the root directory of your Checkmk site.
 Then restart the site with `omd restart`.
 After updating, it might be necessary to remove outdated `.pyc` files between stopping and starting the site.
+
+== Configuration
+
+For configuration a JSON config file xtraspool.json must be present in `$MK_CONFDIR`.
+See the comments in xtraspool.py to get an idea how to write on.
+Users of the commercial editions can use the Agent Bakery to configure the plugin.
+
+.$MK_CONFDIR/xtraspool.json
+[source,json]
+----
+{
+"dirs": [
+   {
+      "directory": "/tmp/test23",
+      "follow_symlinks": "ignore",
+      "buffering": "buffered",
+      "ignore_size": 64,
+      "max_age": 600
+    },
+    {
+      "directory": "/tmp/test42",
+      "follow_symlinks": "follow",
+      "buffering": "unbuffered"
+    }
+  ]
+}
+----
+
+Here, all files in `/tmp/test23` that are at most 64kB of size and up to 10 minutes old are treated as spool files.
+Files present are read to memory, checked and then written to standard out.
+Symlinks are ignored.
+
+In `/tmp/test42` symlinks are followed, all files are written unbuffered which allows for transferring larger files (but less checks).
+
+== Error handling
+
+Notes, warnings and errors are shown in the _Xtraspool statistics_ service.
+Notes are typically mapped to _OK_, warnings to _WARN_ and errors to _CRIT_.
+This can be configured.
+
+=== READMEs and hidden files
+
+Files starting with `readme` (case insensitive) and hidden files are ignored, but a note is generated when such files are seen.
+Also a note is generated when a symlink is encountered in a directory where no symlinks are followed.
+
+=== Too old, too large files
+
+If a file that usually should be emitted is too old or too large, a warning is generated.
+This usually means, someone should check.
+
+=== Invalid UTF-8
+
+In buffered mode, a file that does contain invalid UTF-8 is completely suppressed, a warning is generated.
+If invalid UTF-8 is encountered in unbuffered mode, the file will only be emitted until (including) the last line with proper UTF-8.
+Since this often means that checks will treat the agent section as valid, an error is issued.
+
+=== More errors
+
+If a file is not accessible, if an attempted path traversal is detected or if the configuration is messed up, an error will be emitted.
+
+
