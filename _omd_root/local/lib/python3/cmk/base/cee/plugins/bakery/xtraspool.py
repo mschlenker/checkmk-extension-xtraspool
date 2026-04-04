@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Shebang only needed for editor!
+# (c) 2025-2026 Mattias Schlenker
+#
+# Bakery configuration for xtraspool
 
 import json
 from pathlib import Path
@@ -38,4 +41,3 @@ register.bakery_plugin(
     name = "xtraspool",
     files_function = get_xtraspool_plugin_files,
 )
-

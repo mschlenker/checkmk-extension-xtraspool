@@ -99,7 +99,7 @@ def _form_spec_single_directory(title):
 
 def _parameter_form_bakery():
     return Dictionary(
-        title = Title("Extra spool directories"),
+        title = Title("Xtraspool directories"),
         elements = {
             "dirs": DictElement(
                 required = True,
@@ -112,7 +112,7 @@ def _parameter_form_bakery():
 
 rule_spec_xtraspool_bakery = AgentConfig(
     name = "xtraspool",
-    title = Title("Extra spool directories"),
+    title = Title("Xtraspool directories"),
     topic = Topic.GENERAL,
     parameter_form = _parameter_form_bakery,
 )

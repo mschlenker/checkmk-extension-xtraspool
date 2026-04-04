@@ -161,7 +161,8 @@ def dump_buffered(dircfg, file, stats):
         print(l)
     if inside_piggy == True:
         print('<<<<>>>>')
-        stats["warnings"][fpath] = 'ErrorNoAgentSection'
+        stats["warnings"][fpath] = 'PiggybackNotTerminated'
+    stats["transferred"].append(fpath)
     return stats
 
 # Unbuffered output of a single file
@@ -196,12 +197,14 @@ def dump_unbuffered(dircfg, file, stats):
         stats["errors"][fpath] = str(e)
         return stats
     f.close
+    stats["transferred"].append(fpath)
     return stats
 
 stats = {
     "notes" : {},
     "warnings" : {},
-    "errors" : {}
+    "errors" : {},
+    "transferred" : []
 }
 cfgfile = os.environ['MK_CONFDIR'] + '/xtraspool.json'
 if not os.path.exists(cfgfile):
