@@ -28,7 +28,7 @@ metric_xtraspool_files_transferred = Metric(
 
 graph_xtraspool_transfer_statistics = Graph(
     name="xtraspool_transfer_statistics",
-    title=Title("Outdated packages and security updates"),
+    title=Title("Xtraspool spool file transfer statistics"),
     simple_lines=[
         "xtraspool_warnings",
         "xtraspool_errors",
