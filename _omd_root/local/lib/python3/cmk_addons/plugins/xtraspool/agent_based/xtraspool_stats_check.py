@@ -21,6 +21,8 @@ def check_xtraspool_stats(params, section):
     summary = "{level}: {file} ignored, reason: {reason}"
     esummary = "ERROR: {file} unhandled, reason: {reason}"
     ccount = 0
+    wcount = 0
+    ecount = 0
     for k in section["notes"]:
         yield Result(
             state=State(params["notes"]),
@@ -33,14 +35,29 @@ def check_xtraspool_stats(params, section):
             summary=summary.format(level="Warning", file=k, reason=section["warnings"][k])
         )
         ccount = ccount + 1
+        wcount = wcount + 1
     for k in section["errors"]:
         yield Result(
             state=State(params["errors"]),
             summary=esummary.format(file=k, reason=section["errors"][k])
         )
         ccount = ccount + 1
+        ecount = ecount + 1
     if ccount < 1:
         yield Result(state=State.OK, summary="Everything is fine.")
+    yield Metric(
+        name = "xtraspool_warnings",
+        value = wcount,
+    )
+    yield Metric(
+        name = "xtraspool_errors",
+        value = ecount,
+    )
+    yield Metric(
+        name = "xtraspool_files_transferred",
+        value = len(section["transferred"]),
+    )
+    
 
 agent_section_xtraspool_stats = AgentSection(
     name = "xtraspool_stats",
