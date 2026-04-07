@@ -28,8 +28,6 @@ I will build MKPs from time to time when a rather stable state is reached and al
 
 === Developers
 
-*Be careful, the paths in this repo might only work with Checkmk 2.4 because the bakery plug-in changed location!*
-
 Clone this repository, then sync the content of `_omd_root` to the root directory of your Checkmk site.
 Then restart the site with `omd restart`.
 After updating, it might be necessary to remove outdated `.pyc` files between stopping and starting the site.
