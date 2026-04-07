@@ -3,7 +3,7 @@
  'download_url': 'https://github.com/mschlenker/checkmk-extension-xtraspool',
  'files': {'agents': ['plugins/xtraspool.py'],
            'cmk_addons_plugins': ['xtraspool/agent_based/xtraspool_stats_check.py',
-                                  'xtraspool/graphing/graphing_patchmon_patches.py',
+                                  'xtraspool/graphing/graphing_xtraspool_statistics.py',
                                   'xtraspool/rulesets/ruleset_xtraspool_bakery.py',
                                   'xtraspool/rulesets/ruleset_xtraspool_check.py'],
            'lib': ['check_mk/base/cee/plugins/bakery/xtraspool.py']},
